@@ -1,4 +1,4 @@
-package app
+package web
 
 import (
 	"github.com/gin-gonic/gin"
@@ -22,6 +22,20 @@ func (g *Gin) Response(httpCode, errCode int, data interface{}) {
 		Code: errCode,
 		Msg:  e.GetMsg(errCode),
 		Data: data,
+	})
+	return
+}
+func (g *Gin) Succ(data interface{}) {
+	g.C.JSON(200, Response{
+		Code: 200,
+		Data: data,
+	})
+	return
+}
+func (g *Gin) Error(msg string) {
+	g.C.JSON(500, Response{
+		Code: 500,
+		Msg:  msg,
 	})
 	return
 }
