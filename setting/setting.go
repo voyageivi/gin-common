@@ -3,7 +3,15 @@ package setting
 import (
 	"github.com/go-yaml/yaml"
 	"io/ioutil"
+	"os"
 	"time"
+)
+
+const (
+	KEY_PROFILE  = "profile"
+	PROFILE_DEV  = "dev"
+	PROFILE_TEST = "test"
+	PROFILE_PROD = "prod"
 )
 
 type App struct {
@@ -60,14 +68,25 @@ var Config = struct {
 }{}
 
 // Setup initialize the configuration instance
+var Profile string
+
 func Setup() {
-	YamlLoadFromPath("config/config.yml", &Config)
+
+	profile := "config/config-" + GetProfile() + ".yml"
+	YamlLoadFromPath(profile, &Config)
 
 	//AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
 	//ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	//ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
 	//RedisSetting.IdleTimeout = RedisSetting.IdleTimeout * time.Second
 
+}
+func GetProfile() string {
+	Profile = os.Getenv(KEY_PROFILE)
+	if Profile == "" {
+		Profile = PROFILE_DEV
+	}
+	return Profile
 }
 
 //YamlLoadFromPath load from local file
