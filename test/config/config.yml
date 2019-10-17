@@ -1,0 +1,11 @@
+app:
+  page_size: 10
+
+database:
+  user: root
+  password: root
+  host: localhost
+  name: test
+
+redis:
+  host: localhost

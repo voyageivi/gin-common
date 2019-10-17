@@ -13,16 +13,16 @@ var RedisConn *redis.Pool
 // Setup Initialize the Redis instance
 func Setup() error {
 	RedisConn = &redis.Pool{
-		MaxIdle:     setting.RedisSetting.MaxIdle,
-		MaxActive:   setting.RedisSetting.MaxActive,
-		IdleTimeout: setting.RedisSetting.IdleTimeout,
+		MaxIdle:     setting.Config.Redis.MaxIdle,
+		MaxActive:   setting.Config.Redis.MaxActive,
+		IdleTimeout: setting.Config.Redis.IdleTimeout,
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", setting.RedisSetting.Host)
+			c, err := redis.Dial("tcp", setting.Config.Redis.Host)
 			if err != nil {
 				return nil, err
 			}
-			if setting.RedisSetting.Password != "" {
-				if _, err := c.Do("AUTH", setting.RedisSetting.Password); err != nil {
+			if setting.Config.Redis.Password != "" {
+				if _, err := c.Do("AUTH", setting.Config.Redis.Password); err != nil {
 					c.Close()
 					return nil, err
 				}

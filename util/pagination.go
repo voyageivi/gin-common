@@ -3,8 +3,7 @@ package util
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
-
-	"github.com/EDDYCJY/go-gin-example/pkg/setting"
+	"github.com/voyageivi/gin-common/setting"
 )
 
 // GetPage get page parameters

@@ -8,30 +8,25 @@ import (
 	"log"
 )
 
-var db *gorm.DB
+var DB *gorm.DB
 
 func Setup() {
 	var err error
-	db, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		setting.DatabaseSetting.User,
-		setting.DatabaseSetting.Password,
-		setting.DatabaseSetting.Host,
-		setting.DatabaseSetting.Name))
+	DB, err = gorm.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		setting.Config.Database.User,
+		setting.Config.Database.Password,
+		setting.Config.Database.Host,
+		setting.Config.Database.Name))
 
 	if err != nil {
 		log.Fatalf("models.Setup err: %v", err)
 	}
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return setting.DatabaseSetting.TablePrefix + defaultTableName
+		return setting.Config.Database.TablePrefix + defaultTableName
 	}
 
-	db.SingularTable(true)
-	db.DB().SetMaxIdleConns(10)
-	db.DB().SetMaxOpenConns(100)
-}
-
-// CloseDB closes database connection (unnecessary)
-func CloseDB() {
-	defer db.Close()
+	DB.SingularTable(true)
+	DB.DB().SetMaxIdleConns(10)
+	DB.DB().SetMaxOpenConns(100)
 }

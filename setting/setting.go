@@ -1,15 +1,14 @@
 package setting
 
 import (
-	"log"
+	"github.com/go-yaml/yaml"
+	"io/ioutil"
 	"time"
-
-	"github.com/go-ini/ini"
 )
 
 type App struct {
 	JwtSecret string
-	PageSize  int
+	PageSize  int `yaml:"page_size"`
 	PrefixUrl string
 
 	RuntimeRootPath string
@@ -37,54 +36,52 @@ type Server struct {
 	WriteTimeout time.Duration
 }
 
-var ServerSetting = &Server{}
-
 type Database struct {
-	Type        string
-	User        string
-	Password    string
-	Host        string
-	Name        string
-	TablePrefix string
+	User        string `yaml:"user"`
+	Password    string `yaml:"password"`
+	Host        string `yaml:"host"`
+	Name        string `yaml:"name"`
+	TablePrefix string `yaml:"table_prefix"`
 }
-
-var DatabaseSetting = &Database{}
 
 type Redis struct {
-	Host        string
-	Password    string
-	MaxIdle     int
-	MaxActive   int
-	IdleTimeout time.Duration
+	Host        string        `yaml:"host"`
+	Password    string        `yaml:"password"`
+	MaxIdle     int           `yaml:"max_idle"`
+	MaxActive   int           `yaml:"max_active"`
+	IdleTimeout time.Duration `yaml:"idle_timeout"`
 }
 
-var RedisSetting = &Redis{}
-
-var cfg *ini.File
+var Config = struct {
+	App      App
+	Server   Server
+	Database Database
+	Redis    Redis
+}{}
 
 // Setup initialize the configuration instance
 func Setup() {
-	var err error
-	cfg, err = ini.Load("conf/app.ini")
-	if err != nil {
-		log.Fatalf("setting.Setup, fail to parse 'conf/app.ini': %v", err)
-	}
+	YamlLoadFromPath("config/config.yml", &Config)
 
-	mapTo("app", AppSetting)
-	mapTo("server", ServerSetting)
-	mapTo("database", DatabaseSetting)
-	mapTo("redis", RedisSetting)
+	//AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
+	//ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
+	//ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
+	//RedisSetting.IdleTimeout = RedisSetting.IdleTimeout * time.Second
 
-	AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
-	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
-	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
-	RedisSetting.IdleTimeout = RedisSetting.IdleTimeout * time.Second
 }
 
-// mapTo map section
-func mapTo(section string, v interface{}) {
-	err := cfg.Section(section).MapTo(v)
+//YamlLoadFromPath load from local file
+func YamlLoadFromPath(path string, t interface{}) error {
+
+	b, err := ioutil.ReadFile(path)
+
 	if err != nil {
-		log.Fatalf("Cfg.MapTo %s err: %v", section, err)
+		return err
 	}
+
+	if err = yaml.Unmarshal(b, t); err != nil {
+		return err
+	}
+
+	return nil
 }
