@@ -3,7 +3,7 @@ module github.com/voyageivi/gin-common
 go 1.13
 
 require (
-	github.com/astaxie/beego v1.12.0
+	github.com/astaxie/beego v1.12.2
 	github.com/denisenkom/go-mssqldb v0.0.0-20191001013358-cfbb681360f0 // indirect
 	github.com/dgrijalva/jwt-go v3.1.0+incompatible
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
@@ -13,8 +13,6 @@ require (
 	github.com/jinzhu/gorm v0.0.0-20180213101209-6e1387b44c64
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.0.1 // indirect
-	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/unknwon/com v1.0.1
-	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2
 )
